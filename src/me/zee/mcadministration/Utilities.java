@@ -10,17 +10,17 @@ import org.bukkit.entity.Player;
 public class Utilities {
 	private MCAdministration plugin;
 	private String[] banLengths = {
-			"5m",
-			"30m",
-			"1h",
-			"12h",
-			"1d",
-			"2d",
-			"4d",
-			"1w",
-			"2w",
-			"3w",
-			"1m"
+			"5m", //5 minutes
+			"30m", //30 minutes
+			"1h", //1 hour
+			"12h", //12 hours
+			"1d",  //1 day
+			"2d", //2 days
+			"4d", //4 days
+			"1w", //1 week
+			"2w", //2 weeks
+			"3w", //3 weeks
+			"1m" //1 month
 		};
 	
 	/**
@@ -304,27 +304,27 @@ public class Utilities {
 	 */
 	public long lengthStrToNum(String length) {
 		switch(length) {
-		case "5m":
+		case "5m": //5 minutes
 			return (5 * 60);
-		case "30m":
+		case "30m": //30 minutes
 			return (30 * 60);
-		case "1h":
+		case "1h": //1 hour
 			return (60 * 60);
-		case "12hr":
+		case "12h": //12 hours
 			return (12 * (60 * 60));
-		case "1d":
+		case "1d": //1 day
 			return (24 * (60 * 60));
-		case "2d":
+		case "2d": //2 days
 			return (2 * (24 * (60 * 60)));
-		case "4d":
+		case "4d": //4 days
 			return (4 * (24 * (60 * 60)));
-		case "1w":
+		case "1w": //1 week
 			return (7 * (24 * (60 * 60)));
-		case "2w":
+		case "2w": //2 weeks
 			return (14 * (24 * (60 * 60)));
-		case "3w":
+		case "3w": //3 weeks
 			return (21 * (24 * (60 * 60)));
-		case "1m":
+		case "1m": //1 month
 			return (31 * (24 * (60 * 60)));
 		default:
 			return 0;
