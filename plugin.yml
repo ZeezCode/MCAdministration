@@ -1,0 +1,70 @@
+name: MCAdministration
+version: 0.5
+main: me.zee.mcadministration.MCAdministration
+author: Zee
+depend: [Vault]
+
+commands:
+  kick:
+    description: Kicks a player with a given reason
+    permission: mca.kick
+  slay:
+    description: Slays a player with a given reason
+    permission: mca.slay
+    aliases: [kill]
+  sethealth:
+    description: Sets a player's health to a value with a given reason
+    permission: mca.sethealth
+    aliases: [sethp]
+  warn:
+    description: Warns a player with a given reason
+    permission: mca.warn
+  mute:
+    description: Mutes a player with a given reason
+    permission: mca.mute
+  unmute:
+    description: Unmutes a player
+    permission: mca.mute
+  ban:
+    description: Bans a player with a given reason
+    permission: mca.ban
+  tempban:
+    description: Temporarily bans a player with a given reason
+    permission: mca.ban
+  unban:
+    description: Unbans a player
+    permission: mca.ban
+    
+permissions:
+  mca.*:
+    description: Gives access to all MCA commands
+    default: op
+    children:
+      mca.kick: true
+      mca.sethealth: true
+      mca.slay: true
+      mca.warn: true
+      mca.mute: true
+      mca.ban: true
+      mca.unbanunrestricted: true
+  mca.kick:
+    description: Gives access to /kick
+    default: op
+  mca.sethealth:
+    description: Gives access to /sethealth
+    default: op
+  mca.slay:
+    description: Gives access to /slay
+    default: op
+  mca.warn:
+    description: Gives access to /warn
+    default: op
+  mca.mute:
+    description: Gives access to /mute and /unmute
+    default: op
+  mca.ban:
+    description: Gives access to /ban, /tempban, and /unban
+    default: op
+  mca.unban.unrestricted:
+    description: Allows users to unban players that they did not ban
+    default: op
