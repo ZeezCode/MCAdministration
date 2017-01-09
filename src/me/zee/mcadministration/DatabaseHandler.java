@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.UUID;
 
 public class DatabaseHandler {
@@ -27,7 +26,7 @@ public class DatabaseHandler {
 	 * @param target The player being taken action upon
 	 * @param staff The player taking action
 	 * @param reason Why target_ply is being acted against
-	 * @param length Length of action (Only applicable for temp bans)
+	 * @param length Length of action (0 if not temp ban)
 	 * @param timestamp UNIX timestamp of action
 	 * 
 	 * @return boolean If action was successfully inserted into database
@@ -41,10 +40,7 @@ public class DatabaseHandler {
 			sql.setString(3, target.toString()); //target_ply
 			sql.setString(4, (staff == null ? "Server" : staff.toString())); //calling_ply
 			sql.setString(5, (reason == null ? null : reason.trim())); //Reason
-			if (length == 0l)
-				sql.setNull(6, Types.BIGINT); //Length
-			else
-				sql.setLong(6, length); //Length
+			sql.setLong(6, length); //Length
 			sql.setLong(7, timestamp); //Timestamp
 			int gen_keys = sql.executeUpdate();
 			
