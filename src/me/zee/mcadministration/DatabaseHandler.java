@@ -37,7 +37,7 @@ public class DatabaseHandler {
 			PreparedStatement sql = connection.prepareStatement("INSERT INTO actions VALUES (?, ?, ?, ?, ?, ?, ?);", PreparedStatement.RETURN_GENERATED_KEYS);
 			sql.setInt(1, 0); //Action ID (AI, ignores my value)
 			sql.setString(2, action); //Action
-			sql.setString(3, target.toString()); //target_ply
+			sql.setString(3, (target == null ? null : target.toString())); //target_ply (Null if action is "Announce")
 			sql.setString(4, (staff == null ? "Server" : staff.toString())); //calling_ply
 			sql.setString(5, (reason == null ? null : reason.trim())); //Reason
 			sql.setLong(6, length); //Length
@@ -49,9 +49,9 @@ public class DatabaseHandler {
 				keys.next();
 				int actionID = keys.getInt(1);
 				PreparedStatement sql2 = connection.prepareStatement("INSERT INTO bans VALUES (?, ?, ?);");
-				sql2.setInt(1, 0);
-				sql2.setInt(2, actionID);
-				sql2.setString(3, target.toString());
+				sql2.setInt(1, 0); //Ban ID (AI, ignores my value)
+				sql2.setInt(2, actionID); //Action ID (Foreign ID)
+				sql2.setString(3, target.toString()); //target_ply
 				sql2.execute();
 				sql2.close();
 			}

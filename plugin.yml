@@ -34,6 +34,10 @@ commands:
   unban:
     description: Unbans a player
     permission: mca.ban
+  announce:
+    description: Announces a message to the server
+    permission: mca.announce
+    aliases: [ann, broadcast]
     
 permissions:
   mca.*:
@@ -47,6 +51,7 @@ permissions:
       mca.mute: true
       mca.ban: true
       mca.unbanunrestricted: true
+      mca.announce: true
   mca.kick:
     description: Gives access to /kick
     default: op
@@ -67,4 +72,7 @@ permissions:
     default: op
   mca.unban.unrestricted:
     description: Allows users to unban players that they did not ban
+    default: op
+  mca.announce:
+    description: Gives access to the /announce command
     default: op

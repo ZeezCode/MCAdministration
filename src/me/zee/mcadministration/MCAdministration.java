@@ -59,6 +59,7 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		getCommand("ban").setExecutor(new CMD_Ban(this));
 		getCommand("tempban").setExecutor(new CMD_TempBan(this));
 		getCommand("unban").setExecutor(new CMD_Unban(this));
+		getCommand("announce").setExecutor(new CMD_Announce(this));
 	}
 	
 	/**
