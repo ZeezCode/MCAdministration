@@ -34,6 +34,16 @@ commands:
   unban:
     description: Unbans a player
     permission: mca.ban
+  announce:
+    description: Announces a message to the server
+    permission: mca.announce
+    aliases: [ann, broadcast]
+  invsee:
+    description: View a player's inventory with a given reason
+    permission: mca.invsee
+  viewban:
+    description: View a specific ban
+    permission: mca.viewban
     
 permissions:
   mca.*:
@@ -47,6 +57,9 @@ permissions:
       mca.mute: true
       mca.ban: true
       mca.unbanunrestricted: true
+      mca.announce: true
+      mca.invsee: true
+      mca.viewban: true
   mca.kick:
     description: Gives access to /kick
     default: op
@@ -68,3 +81,12 @@ permissions:
   mca.unban.unrestricted:
     description: Allows users to unban players that they did not ban
     default: op
+  mca.announce:
+    description: Gives access to /announce
+    default: op
+  mca.invsee:
+    description: Gives access to /invsee
+    default: op
+  mca.viewban:
+    description: Gives access to /viewban
+    default: true

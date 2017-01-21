@@ -3,6 +3,8 @@ package me.zee.mcadministration;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.UUID;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -212,6 +214,10 @@ public class Utilities {
 		target_ply.kickPlayer("You have been " + (permanent ? "permanently" : "temporarily") + " banned by " + (calling_ply == null ? "Server" : calling_ply.getName()) + " for: " + reason);
 	}
 	
+	public void announceMessage(String message) {
+		Bukkit.broadcastMessage(getPrefix() + ChatColor.YELLOW + message);
+	}
+	
 	/**
 	 * <p>Returns current UNIX timestamp</p>
 	 * 
@@ -269,6 +275,8 @@ public class Utilities {
 		} else if (length >= 60) { //>=one minute
 			double minutes = length / 60d;
 			return df.format(minutes) + " minute(s)";
+		} else if (length == 0) {
+			return "Permanent";
 		} else {
 			return length + " second(s)";
 		}

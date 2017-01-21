@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.UUID;
 
 public class DatabaseHandler {
@@ -27,7 +26,7 @@ public class DatabaseHandler {
 	 * @param target The player being taken action upon
 	 * @param staff The player taking action
 	 * @param reason Why target_ply is being acted against
-	 * @param length Length of action (Only applicable for temp bans)
+	 * @param length Length of action (0 if not temp ban)
 	 * @param timestamp UNIX timestamp of action
 	 * 
 	 * @return boolean If action was successfully inserted into database
@@ -38,13 +37,10 @@ public class DatabaseHandler {
 			PreparedStatement sql = connection.prepareStatement("INSERT INTO actions VALUES (?, ?, ?, ?, ?, ?, ?);", PreparedStatement.RETURN_GENERATED_KEYS);
 			sql.setInt(1, 0); //Action ID (AI, ignores my value)
 			sql.setString(2, action); //Action
-			sql.setString(3, target.toString()); //target_ply
+			sql.setString(3, (target == null ? null : target.toString())); //target_ply (Null if action is "Announce")
 			sql.setString(4, (staff == null ? "Server" : staff.toString())); //calling_ply
 			sql.setString(5, (reason == null ? null : reason.trim())); //Reason
-			if (length == 0l)
-				sql.setNull(6, Types.BIGINT); //Length
-			else
-				sql.setLong(6, length); //Length
+			sql.setLong(6, length); //Length
 			sql.setLong(7, timestamp); //Timestamp
 			int gen_keys = sql.executeUpdate();
 			
@@ -53,9 +49,9 @@ public class DatabaseHandler {
 				keys.next();
 				int actionID = keys.getInt(1);
 				PreparedStatement sql2 = connection.prepareStatement("INSERT INTO bans VALUES (?, ?, ?);");
-				sql2.setInt(1, 0);
-				sql2.setInt(2, actionID);
-				sql2.setString(3, target.toString());
+				sql2.setInt(1, 0); //Ban ID (AI, ignores my value)
+				sql2.setInt(2, actionID); //Action ID (Foreign ID)
+				sql2.setString(3, target.toString()); //target_ply
 				sql2.execute();
 				sql2.close();
 			}
