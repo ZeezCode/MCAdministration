@@ -41,6 +41,9 @@ commands:
   invsee:
     description: View a player's inventory with a given reason
     permission: mca.invsee
+  viewban:
+    description: View a specific ban
+    permission: mca.viewban
     
 permissions:
   mca.*:
@@ -56,6 +59,7 @@ permissions:
       mca.unbanunrestricted: true
       mca.announce: true
       mca.invsee: true
+      mca.viewban: true
   mca.kick:
     description: Gives access to /kick
     default: op
@@ -83,3 +87,6 @@ permissions:
   mca.invsee:
     description: Gives access to /invsee
     default: op
+  mca.viewban:
+    description: Gives access to /viewban
+    default: true

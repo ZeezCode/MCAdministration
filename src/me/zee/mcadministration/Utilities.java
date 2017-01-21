@@ -275,6 +275,8 @@ public class Utilities {
 		} else if (length >= 60) { //>=one minute
 			double minutes = length / 60d;
 			return df.format(minutes) + " minute(s)";
+		} else if (length == 0) {
+			return "Permanent";
 		} else {
 			return length + " second(s)";
 		}
