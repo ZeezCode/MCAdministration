@@ -385,4 +385,17 @@ public class Utilities {
         String saltStr = salt.toString();
         return saltStr;
     }
+	
+	/**
+	 * <p>Returns whether or not a given rank is a valid rank</p>
+	 * 
+	 * @param ranks The list of existing ranks to look through
+	 * @param group The rank to validate
+	 * @return boolean Whether or not the rank exists
+	 */
+	public boolean getRankExists(String[] ranks, String rank) {
+		for (String r : ranks)
+			if (r.equalsIgnoreCase(rank)) return true;
+		return false;
+	}
 }

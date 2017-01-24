@@ -47,6 +47,9 @@ commands:
   register:
     description: Register an account with the server
     permission: mca.register
+  setrank:
+    description: Set the new rank of a given user
+    permission: mca.setrank
     
 permissions:
   mca.*:
@@ -64,6 +67,7 @@ permissions:
       mca.invsee: true
       mca.viewban: true
       mca.register: true
+      mca.setrank: true
   mca.kick:
     description: Gives access to /kick
     default: op
@@ -97,3 +101,6 @@ permissions:
   mca.register:
     description: Gives access to /register
     default: true
+  mca.setrank:
+    description: Gives access to /setrank
+    default: op

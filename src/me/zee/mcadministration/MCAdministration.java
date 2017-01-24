@@ -67,6 +67,7 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		getCommand("invsee").setExecutor(new CMD_Invsee(this));
 		getCommand("viewban").setExecutor(new CMD_ViewBan(this));
 		getCommand("register").setExecutor(new CMD_Register(this));
+		getCommand("setrank").setExecutor(new CMD_SetRank(this));
 	}
 	
 	/**
@@ -101,8 +102,12 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		Player ply = e.getPlayer();
 		String savedRank = dbHandler.getPlayerRank(ply.getUniqueId());
 		if (savedRank == null) return;
-		if (!savedRank.equals(permission.getPrimaryGroup(ply))) //If rank saved in DB is different than user's current rank
+		if (!savedRank.equals(permission.getPrimaryGroup(ply))) {//If rank saved in DB is different than user's current rank
+			for (String group : permission.getPlayerGroups(ply)) {
+				permission.playerRemoveGroup(ply, group);
+			}
 			permission.playerAddGroup(ply, savedRank);
+		}
 	}
 	
 	/**

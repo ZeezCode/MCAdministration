@@ -179,6 +179,27 @@ public class DatabaseHandler {
 	}
 	
 	/**
+	 * <p>Updates a player's rank in the players database table</p>
+	 * 
+	 * @param uuid The UUID of the player whose rank is being updated
+	 * @param rank The new rank of the given player
+	 */
+	public void setPlayerRank(UUID uuid, String rank) {
+		openConnection();
+		try {
+			PreparedStatement sql = connection.prepareStatement("UPDATE players SET rank = ? WHERE uuid = ?;");
+			sql.setString(1, rank);
+			sql.setString(2, uuid.toString());
+			sql.executeUpdate();
+			sql.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+	}
+	
+	/**
 	 * <p>Removes a specific ban from database bans table</p>
 	 * 
 	 * @param uuid The UUID of the banned player
