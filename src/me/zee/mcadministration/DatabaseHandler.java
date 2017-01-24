@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import org.bukkit.entity.Player;
+
 public class DatabaseHandler {
 	private MCAdministration plugin;
 	private Connection connection;
@@ -99,6 +101,81 @@ public class DatabaseHandler {
 		}
 		
 		return ban;
+	}
+	
+	/**
+	 * <p>Returns whether or not a given player has already registered an account</p>
+	 * 
+	 * @param uuid The UUID of the player to be checked
+	 * @return boolean Whether or not the player has registered an account
+	 */
+	public boolean isPlayerRegistered(UUID uuid) {
+		openConnection();
+		try {
+			PreparedStatement sql = connection.prepareStatement("SELECT * FROM players WHERE uuid = ?;");
+			sql.setString(1, uuid.toString());
+			ResultSet result = sql.executeQuery();
+			boolean exists = result.next();
+			
+			sql.close();
+			result.close();
+			return exists;
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+		return false;
+	}
+	
+	/**
+	 * <p>Adds a new user to the players table in the database</p>
+	 * 
+	 * @param ply The player registering an account
+	 * @param password The requested password of the player
+	 */
+	public void registerPlayer(Player ply, String password) {
+		openConnection();
+		try {
+			String salt = plugin.util.getNewSalt(8);
+			password = plugin.util.sha256(plugin.util.sha256(password) + plugin.util.sha256(salt));
+			PreparedStatement sql = connection.prepareStatement("INSERT INTO players VALUES (?, ?, ?, ?);");
+			sql.setString(1, ply.getUniqueId().toString());
+			sql.setString(2, plugin.permission.getPrimaryGroup(ply));
+			sql.setString(3, password);
+			sql.setString(4, salt);
+			sql.execute();
+			sql.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+	}
+	
+	/**
+	 * <p>Returns the rank of a given player saved in the DB</p>
+	 * 
+	 * @param uuid The UUID of the player to be checked
+	 * @return String The rank of the user saved in the DB
+	 */
+	public String getPlayerRank(UUID uuid) {
+		String rank = null;
+		openConnection();
+		try {
+			PreparedStatement sql = connection.prepareStatement("SELECT rank FROM players WHERE uuid = ?;");
+			sql.setString(1, uuid.toString());
+			ResultSet result = sql.executeQuery();
+			if (result.next())
+				rank = result.getString("rank");
+			sql.close();
+			result.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+		return rank;
 	}
 	
 	/**

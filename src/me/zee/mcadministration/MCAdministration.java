@@ -5,16 +5,30 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.zee.mcadministration.executors.*;
+import me.zee.mcadministration.executors.CMD_Announce;
+import me.zee.mcadministration.executors.CMD_Ban;
+import me.zee.mcadministration.executors.CMD_Invsee;
+import me.zee.mcadministration.executors.CMD_Kick;
+import me.zee.mcadministration.executors.CMD_Mute;
+import me.zee.mcadministration.executors.CMD_Register;
+import me.zee.mcadministration.executors.CMD_SetHealth;
+import me.zee.mcadministration.executors.CMD_Slay;
+import me.zee.mcadministration.executors.CMD_TempBan;
+import me.zee.mcadministration.executors.CMD_Unban;
+import me.zee.mcadministration.executors.CMD_Unmute;
+import me.zee.mcadministration.executors.CMD_ViewBan;
+import me.zee.mcadministration.executors.CMD_Warn;
 import net.milkbowl.vault.permission.Permission;
 
 public class MCAdministration extends JavaPlugin implements Listener {
@@ -25,7 +39,9 @@ public class MCAdministration extends JavaPlugin implements Listener {
 	
 	/**
 	 * TODO:
-	 *  - Set reason column of actions table to allow NULL values, send NULL as reason rather than N/A so no reason can't be faked by staff
+	 *  - /register <pw> <pw> (Done)
+	 *  - /changepw <oldpw> <newpw> <newpw>
+	 *  - /setrank <user> <rank>
 	 */
 	
 	/**
@@ -62,6 +78,7 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		getCommand("announce").setExecutor(new CMD_Announce(this));
 		getCommand("invsee").setExecutor(new CMD_Invsee(this));
 		getCommand("viewban").setExecutor(new CMD_ViewBan(this));
+		getCommand("register").setExecutor(new CMD_Register(this));
 	}
 	
 	/**
@@ -78,12 +95,26 @@ public class MCAdministration extends JavaPlugin implements Listener {
 	/**
 	 * <p>Hooked to server login system, ran before player joins server</p>
 	 * 
-	 * @param e LoginEvent, contains info about player who is logging in
+	 * @param e PlayerLoginEvent, contains info about player who is logging in
 	 */
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent e) {
 		if (util.isPlayerBanned(e.getPlayer().getUniqueId()))
 			e.disallow(Result.KICK_BANNED, util.getBannedMessage(e.getPlayer().getUniqueId()));
+	}
+	
+	/**
+	 * <p>Hooked to server login system, ran when player joins server</p>
+	 * 
+	 * @param e PlayerJoinEvent, contains info about who is joining
+	 */
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e) {
+		Player ply = e.getPlayer();
+		String savedRank = dbHandler.getPlayerRank(ply.getUniqueId());
+		if (savedRank == null) return;
+		if (!savedRank.equals(permission.getPrimaryGroup(ply))) //If rank saved in DB is different than user's current rank
+			permission.playerAddGroup(ply, savedRank);
 	}
 	
 	/**

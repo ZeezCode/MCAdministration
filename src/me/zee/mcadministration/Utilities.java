@@ -1,7 +1,9 @@
 package me.zee.mcadministration;
 
+import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -214,6 +216,11 @@ public class Utilities {
 		target_ply.kickPlayer("You have been " + (permanent ? "permanently" : "temporarily") + " banned by " + (calling_ply == null ? "Server" : calling_ply.getName()) + " for: " + reason);
 	}
 	
+	/**
+	 * <p>Announces a given message to the entire server with the plugin's prefix</p>
+	 * 
+	 * @param message The message to be announced
+	 */
 	public void announceMessage(String message) {
 		Bukkit.broadcastMessage(getPrefix() + ChatColor.YELLOW + message);
 	}
@@ -338,4 +345,44 @@ public class Utilities {
 			return 0;
 		}
 	}
+	
+	/**
+	 * <p>Encrypts a given String to SHA256</p>
+	 * 
+	 * @param input The string to be encrypted
+	 * @return String The encrypted String
+	 */
+	public String sha256(String input) {
+		try {
+        MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
+        byte[] result = mDigest.digest(input.getBytes());
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < result.length; i++) {
+            sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+        }
+         
+        return sb.toString();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+	
+	/**
+	 * <p>Generates a new salt with a given length</p>
+	 * 
+	 * @param length The length of the salt to be created
+	 * @return String The newly generated salt
+	 */
+	public String getNewSalt(int length) {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random gen = new Random();
+        while (salt.length() < length) {
+            int index = (int) (gen.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+    }
 }
