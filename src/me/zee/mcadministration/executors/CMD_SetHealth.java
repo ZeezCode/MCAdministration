@@ -66,7 +66,7 @@ public class CMD_SetHealth implements CommandExecutor {
 				reason += args[i] + " ";
 			}
 			
-			if (plugin.dbHandler.logAction("Set Health", target_ply.getUniqueId(), (calling_ply == null ? null : calling_ply.getUniqueId()), "(" + newHP + ") " + reason, 0l, plugin.util.getTimestamp())) {
+			if (plugin.dbHandler.logAction("Set health to " + newHP, target_ply.getUniqueId(), (calling_ply == null ? null : calling_ply.getUniqueId()), reason, 0l, plugin.util.getTimestamp())) {
 				plugin.util.setHealth(calling_ply, target_ply, newHP, reason);
 				plugin.util.sendMessage(sender, "You have set the health of " + target_ply.getName() + " to " + (newHP / 2.0) + " hearts for: " + reason);
 			} else {
