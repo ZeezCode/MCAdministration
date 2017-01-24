@@ -44,6 +44,9 @@ commands:
   viewban:
     description: View a specific ban
     permission: mca.viewban
+  register:
+    description: Register an account with the server
+    permission: mca.register
     
 permissions:
   mca.*:
@@ -60,6 +63,7 @@ permissions:
       mca.announce: true
       mca.invsee: true
       mca.viewban: true
+      mca.register: true
   mca.kick:
     description: Gives access to /kick
     default: op
@@ -89,4 +93,7 @@ permissions:
     default: op
   mca.viewban:
     description: Gives access to /viewban
+    default: true
+  mca.register:
+    description: Gives access to /register
     default: true

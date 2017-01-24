@@ -16,19 +16,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.zee.mcadministration.executors.CMD_Announce;
-import me.zee.mcadministration.executors.CMD_Ban;
-import me.zee.mcadministration.executors.CMD_Invsee;
-import me.zee.mcadministration.executors.CMD_Kick;
-import me.zee.mcadministration.executors.CMD_Mute;
-import me.zee.mcadministration.executors.CMD_Register;
-import me.zee.mcadministration.executors.CMD_SetHealth;
-import me.zee.mcadministration.executors.CMD_Slay;
-import me.zee.mcadministration.executors.CMD_TempBan;
-import me.zee.mcadministration.executors.CMD_Unban;
-import me.zee.mcadministration.executors.CMD_Unmute;
-import me.zee.mcadministration.executors.CMD_ViewBan;
-import me.zee.mcadministration.executors.CMD_Warn;
+import me.zee.mcadministration.executors.*;
 import net.milkbowl.vault.permission.Permission;
 
 public class MCAdministration extends JavaPlugin implements Listener {
