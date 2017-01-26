@@ -41,7 +41,7 @@ public class CMD_Register implements CommandExecutor {
 		} else
 			plugin.util.sendError(sender, "Sorry, but you must be a player to use this command!");
 		
-		if (plugin.dbHandler.isPlayerRegistered(calling_ply.getUniqueId()))
+		if (plugin.dbHandler.getPlayerInfo(calling_ply.getUniqueId()) != null)
 			plugin.util.sendError(sender, "You are already registered!");
 		else {
 			if (args.length >=2) {

@@ -57,14 +57,6 @@ public class CMD_Invsee implements CommandExecutor {
 			
 			if (plugin.dbHandler.logAction("Inv See", target_ply.getUniqueId(), (calling_ply == null ? null : calling_ply.getUniqueId()), reason, 0l, plugin.util.getTimestamp())) {
 				calling_ply.openInventory(target_ply.getInventory());
-				//I want the title of the opened inv to be "PlayerName's Inventory" 
-				//quick Googling told me the only way to change title of opened inv is with packets
-				//I have idea to do it w/o packets but it'll take time
-				//Maybe I'll do it tomorrow in class
-				//*crosses fingers*
-				
-				//(Opened inv needs to have live updates w/ target's inv, meaning a change made
-				//by the staff or the target needs to show for both)
 				plugin.util.sendMessage(sender, "You are viewing the inventory of " + target_ply.getName() + " for: " + reason);
 			} else {
 				plugin.util.sendError(sender, "Failed to log action! Inventory can not be viewed!");

@@ -1,5 +1,5 @@
 name: MCAdministration
-version: 0.5
+version: 0.9
 main: me.zee.mcadministration.MCAdministration
 author: Zee
 depend: [Vault]
@@ -50,6 +50,10 @@ commands:
   setrank:
     description: Set the new rank of a given user
     permission: mca.setrank
+  changepassword:
+    description: Change the password for a player's server account
+    permission: mca.changepassword
+    aliases: [changepass, changepw]
     
 permissions:
   mca.*:
@@ -68,6 +72,7 @@ permissions:
       mca.viewban: true
       mca.register: true
       mca.setrank: true
+      mca.changepassword: true
   mca.kick:
     description: Gives access to /kick
     default: op
@@ -104,3 +109,6 @@ permissions:
   mca.setrank:
     description: Gives access to /setrank
     default: op
+  mca.changepassword:
+    description: Gives access to /changepassword
+    default: true

@@ -104,28 +104,31 @@ public class DatabaseHandler {
 	}
 	
 	/**
-	 * <p>Returns whether or not a given player has already registered an account</p>
+	 * <p>Returns the information about a player saved in the database</p>
 	 * 
-	 * @param uuid The UUID of the player to be checked
-	 * @return boolean Whether or not the player has registered an account
+	 * @param uuid The UUID of the player
+	 * @return DBPlayer Object containing player's information saved in DB
 	 */
-	public boolean isPlayerRegistered(UUID uuid) {
+	public DBPlayer getPlayerInfo(UUID uuid) {
+		DBPlayer dbPlayer = null;
 		openConnection();
 		try {
 			PreparedStatement sql = connection.prepareStatement("SELECT * FROM players WHERE uuid = ?;");
 			sql.setString(1, uuid.toString());
 			ResultSet result = sql.executeQuery();
-			boolean exists = result.next();
-			
-			sql.close();
+			if (result.next())
+				dbPlayer = new DBPlayer(UUID.fromString(result.getString("uuid")), 
+						result.getString("rank"), 
+						result.getString("password"), 
+						result.getString("salt"));
 			result.close();
-			return exists;
+			sql.close();
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
 			closeConnection();
 		}
-		return false;
+		return dbPlayer;
 	}
 	
 	/**
@@ -154,31 +157,6 @@ public class DatabaseHandler {
 	}
 	
 	/**
-	 * <p>Returns the rank of a given player saved in the DB</p>
-	 * 
-	 * @param uuid The UUID of the player to be checked
-	 * @return String The rank of the user saved in the DB
-	 */
-	public String getPlayerRank(UUID uuid) {
-		String rank = null;
-		openConnection();
-		try {
-			PreparedStatement sql = connection.prepareStatement("SELECT rank FROM players WHERE uuid = ?;");
-			sql.setString(1, uuid.toString());
-			ResultSet result = sql.executeQuery();
-			if (result.next())
-				rank = result.getString("rank");
-			sql.close();
-			result.close();
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection();
-		}
-		return rank;
-	}
-	
-	/**
 	 * <p>Updates a player's rank in the players database table</p>
 	 * 
 	 * @param uuid The UUID of the player whose rank is being updated
@@ -190,6 +168,26 @@ public class DatabaseHandler {
 			PreparedStatement sql = connection.prepareStatement("UPDATE players SET rank = ? WHERE uuid = ?;");
 			sql.setString(1, rank);
 			sql.setString(2, uuid.toString());
+			sql.executeUpdate();
+			sql.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+	}
+	
+	/**
+	 * <p>Sets the password for a given player in the database</p>
+	 * 
+	 * @param playerInfo Contains necessary info about player, get this object from getPlayerInfo()
+	 */
+	public void setPlayerPassword(DBPlayer playerInfo) {
+		openConnection();
+		try {
+			PreparedStatement sql = connection.prepareStatement("UPDATE players SET password = ? WHERE uuid = ?;");
+			sql.setString(1, playerInfo.getPassword());
+			sql.setString(2, playerInfo.getUniqueID().toString());
 			sql.executeUpdate();
 			sql.close();
 		} catch(Exception e) {

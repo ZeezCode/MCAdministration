@@ -27,9 +27,7 @@ public class MCAdministration extends JavaPlugin implements Listener {
 	
 	/**
 	 * TODO:
-	 *  - /register <pw> <pw> (Done)
-	 *  - /changepw <oldpw> <newpw> <newpw>
-	 *  - /setrank <user> <rank>
+	 *  - Web port
 	 */
 	
 	/**
@@ -68,6 +66,7 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		getCommand("viewban").setExecutor(new CMD_ViewBan(this));
 		getCommand("register").setExecutor(new CMD_Register(this));
 		getCommand("setrank").setExecutor(new CMD_SetRank(this));
+		getCommand("changepassword").setExecutor(new CMD_ChangePassword(this));
 	}
 	
 	/**
@@ -100,13 +99,13 @@ public class MCAdministration extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player ply = e.getPlayer();
-		String savedRank = dbHandler.getPlayerRank(ply.getUniqueId());
-		if (savedRank == null) return;
-		if (!savedRank.equals(permission.getPrimaryGroup(ply))) {//If rank saved in DB is different than user's current rank
+		DBPlayer playerInfo = dbHandler.getPlayerInfo(ply.getUniqueId());
+		if (playerInfo == null) return;
+		if (!playerInfo.getRank().equals(permission.getPrimaryGroup(ply))) {//If rank saved in DB is different than user's current rank
 			for (String group : permission.getPlayerGroups(ply)) {
 				permission.playerRemoveGroup(ply, group);
 			}
-			permission.playerAddGroup(ply, savedRank);
+			permission.playerAddGroup(ply, playerInfo.getRank());
 		}
 	}
 	
