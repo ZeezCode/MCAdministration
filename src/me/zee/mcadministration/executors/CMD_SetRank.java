@@ -54,8 +54,9 @@ public class CMD_SetRank implements CommandExecutor {
 				plugin.util.sendError(sender, "Invalid rank entered!");
 				return true;
 			}
+			rank = Character.toUpperCase(rank.charAt(0)) + rank.substring(1); //Capitalize first letter of rank
 			
-			if (plugin.dbHandler.logAction("Set rank to " + rank.toLowerCase(), target_ply.getUniqueId(), (calling_ply == null ? null : calling_ply.getUniqueId()), null, 0l, plugin.util.getTimestamp())) {
+			if (plugin.dbHandler.logAction("Edit Rank", target_ply.getUniqueId(), (calling_ply == null ? null : calling_ply.getUniqueId()), "Changed rank from " + plugin.permission.getPrimaryGroup(target_ply) + " to " + rank, 0l, plugin.util.getTimestamp())) {
 				for (String group : plugin.permission.getPlayerGroups(target_ply)) {
 					plugin.permission.playerRemoveGroup(target_ply, group);
 				}
