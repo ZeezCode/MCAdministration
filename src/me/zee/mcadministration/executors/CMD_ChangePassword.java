@@ -35,7 +35,7 @@ public class CMD_ChangePassword implements CommandExecutor {
 		Player calling_ply = null;
 		if (sender instanceof Player) {
 			calling_ply = (Player) sender;
-			if (!plugin.permission.has(calling_ply, "mca.changepassword")) {
+			if (!plugin.dbHandler.rankHasPermission(plugin.permission.getPrimaryGroup(calling_ply), "can_changepassword")) {
 				plugin.util.sendError(calling_ply, "You do not have access to this command!");
 				return true;
 			}

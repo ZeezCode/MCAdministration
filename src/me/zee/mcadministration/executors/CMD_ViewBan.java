@@ -41,7 +41,7 @@ public class CMD_ViewBan implements CommandExecutor {
 		Player calling_ply = null;
 		if (sender instanceof Player) {
 			calling_ply = (Player) sender;
-			if (!plugin.permission.has(calling_ply, "mca.viewban")) {
+			if (!plugin.dbHandler.rankHasPermission(plugin.permission.getPrimaryGroup(calling_ply), "can_viewban")) {
 				plugin.util.sendError(calling_ply, "You do not have access to this command!");
 				return true;
 			}

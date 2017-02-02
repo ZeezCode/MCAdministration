@@ -31,12 +31,13 @@ public class CMD_SetRank implements CommandExecutor {
 	 * 
 	 * @return boolean Whether or not command successfully ran
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player calling_ply = null;
 		if (sender instanceof Player) {
 			calling_ply = (Player) sender;
-			if (!plugin.permission.has(calling_ply, "mca.setrank")) {
+			if (!plugin.dbHandler.rankHasPermission(plugin.permission.getPrimaryGroup(calling_ply), "can_set_rank")) {
 				plugin.util.sendError(calling_ply, "You do not have access to this command!");
 				return true;
 			}

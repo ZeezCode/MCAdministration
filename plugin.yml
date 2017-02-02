@@ -1,5 +1,5 @@
 name: MCAdministration
-version: 0.9.1
+version: 0.1
 main: me.zee.mcadministration.MCAdministration
 author: Zee
 depend: [Vault]
@@ -7,108 +7,35 @@ depend: [Vault]
 commands:
   kick:
     description: Kicks a player with a given reason
-    permission: mca.kick
   slay:
     description: Slays a player with a given reason
-    permission: mca.slay
     aliases: [kill]
   sethealth:
     description: Sets a player's health to a value with a given reason
-    permission: mca.sethealth
     aliases: [sethp]
   warn:
     description: Warns a player with a given reason
-    permission: mca.warn
   mute:
     description: Mutes a player with a given reason
-    permission: mca.mute
   unmute:
     description: Unmutes a player
-    permission: mca.mute
   ban:
     description: Bans a player with a given reason
-    permission: mca.ban
   tempban:
     description: Temporarily bans a player with a given reason
-    permission: mca.ban
   unban:
     description: Unbans a player
-    permission: mca.ban
   announce:
     description: Announces a message to the server
-    permission: mca.announce
     aliases: [ann, broadcast]
   invsee:
     description: View a player's inventory with a given reason
-    permission: mca.invsee
   viewban:
     description: View a specific ban
-    permission: mca.viewban
   register:
     description: Register an account with the server
-    permission: mca.register
   setrank:
     description: Set the new rank of a given user
-    permission: mca.setrank
   changepassword:
     description: Change the password for a player's server account
-    permission: mca.changepassword
     aliases: [changepass, changepw]
-    
-permissions:
-  mca.*:
-    description: Gives access to all MCA commands
-    default: op
-    children:
-      mca.kick: true
-      mca.sethealth: true
-      mca.slay: true
-      mca.warn: true
-      mca.mute: true
-      mca.ban: true
-      mca.unbanunrestricted: true
-      mca.announce: true
-      mca.invsee: true
-      mca.viewban: true
-      mca.register: true
-      mca.setrank: true
-      mca.changepassword: true
-  mca.kick:
-    description: Gives access to /kick
-    default: op
-  mca.sethealth:
-    description: Gives access to /sethealth
-    default: op
-  mca.slay:
-    description: Gives access to /slay
-    default: op
-  mca.warn:
-    description: Gives access to /warn
-    default: op
-  mca.mute:
-    description: Gives access to /mute and /unmute
-    default: op
-  mca.ban:
-    description: Gives access to /ban, /tempban, and /unban
-    default: op
-  mca.unban.unrestricted:
-    description: Allows users to unban players that they did not ban
-    default: op
-  mca.announce:
-    description: Gives access to /announce
-    default: op
-  mca.invsee:
-    description: Gives access to /invsee
-    default: op
-  mca.viewban:
-    description: Gives access to /viewban
-    default: true
-  mca.register:
-    description: Gives access to /register
-    default: true
-  mca.setrank:
-    description: Gives access to /setrank
-    default: op
-  mca.changepassword:
-    description: Gives access to /changepassword
-    default: true

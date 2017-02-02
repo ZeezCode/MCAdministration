@@ -36,7 +36,7 @@ public class CMD_Unban implements CommandExecutor {
 		Player calling_ply = null;
 		if (sender instanceof Player) {
 			calling_ply = (Player) sender;
-			if (!plugin.permission.has(calling_ply, "mca.ban")) {
+			if (!plugin.dbHandler.rankHasPermission(plugin.permission.getPrimaryGroup(calling_ply), "can_ban")) {
 				plugin.util.sendError(calling_ply, "You do not have access to this command!");
 				return true;
 			}

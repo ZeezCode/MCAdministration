@@ -1,6 +1,7 @@
 package me.zee.mcadministration.executors;
 
 import me.zee.mcadministration.MCAdministration;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,12 +31,13 @@ public class CMD_Kick implements CommandExecutor {
 	 * 
 	 * @return boolean Whether or not command successfully ran
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player calling_ply = null;
 		if (sender instanceof Player) {
 			calling_ply = (Player) sender;
-			if (!plugin.permission.has(calling_ply, "mca.kick")) {
+			if (!plugin.dbHandler.rankHasPermission(plugin.permission.getPrimaryGroup(calling_ply), "can_kick")) {
 				plugin.util.sendError(calling_ply, "You do not have access to this command!");
 				return true;
 			}

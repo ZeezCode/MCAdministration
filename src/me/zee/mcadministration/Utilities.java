@@ -97,7 +97,7 @@ public class Utilities {
 	public boolean staffCanUnban(CommandSender sender, UUID uuid) {
 		if (!(sender instanceof Player)) return true;
 		Player ply = (Player) sender;
-		if (plugin.permission.has(sender, "mca.unban.unrestricted")) return true;
+		if (!plugin.dbHandler.rankHasPermission(plugin.permission.getPrimaryGroup(ply), "can_unban_all")) return true;
 		Ban ban = plugin.dbHandler.getPlayerBan(uuid);
 		if (ban.getStaff() == ply.getUniqueId()) return true;
 		return false;
