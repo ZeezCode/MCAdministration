@@ -1,5 +1,6 @@
 package me.zee.mcadministration;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -8,10 +9,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -101,11 +104,54 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		Player ply = e.getPlayer();
 		DBPlayer playerInfo = dbHandler.getPlayerInfo(ply.getUniqueId());
 		if (playerInfo == null) return;
+		playerInfo.setLastSeen(new Date().getTime() / 1000);
+		dbHandler.updatePlayer(playerInfo);
 		if (!playerInfo.getRank().equals(permission.getPrimaryGroup(ply))) {//If rank saved in DB is different than user's current rank
 			for (String group : permission.getPlayerGroups(ply)) {
 				permission.playerRemoveGroup(ply, group);
 			}
 			permission.playerAddGroup(ply, playerInfo.getRank());
+		}
+	}
+	
+	/**
+	 * <p>Hooked to server disconnect system, ran when player leaves server</p>
+	 * 
+	 * @param e PlayerQuitEvent, contains info about who is leaving
+	 */
+	@EventHandler
+	public void onPlayerLeave(PlayerQuitEvent e) {
+		DBPlayer ply = dbHandler.getPlayerInfo(e.getPlayer().getUniqueId());
+		if (ply != null) {
+			ply.setLastSeen(new Date().getTime() / 1000);
+			dbHandler.updatePlayer(ply);
+		}
+	}
+	
+	/**
+	 * <p>Hooked to player death system, ran when player dies</p>
+	 * 
+	 * @param e PlayerDeathEvent e, contains about info about player who died
+	 */
+	@EventHandler
+	public void onPlayerDeath(PlayerDeathEvent e) {
+		DBPlayer target = dbHandler.getPlayerInfo(e.getEntity().getUniqueId());
+		long timestamp = new Date().getTime()/1000;
+		if (target != null) {
+			target.setDeaths(target.getDeaths() + 1);
+			target.setLastSeen(timestamp);
+			dbHandler.updatePlayer(target);
+			util.sendMessage(e.getEntity(), "You now have " + target.getDeaths() + " counted death" + (target.getDeaths() == 1 ? "" : "s") + "!");
+		}
+		
+		if (e.getEntity().getKiller() != null) {
+			DBPlayer killer = dbHandler.getPlayerInfo(e.getEntity().getKiller().getUniqueId());
+			if (killer != null) {
+				killer.setKills(killer.getKills()+1);
+				killer.setLastSeen(timestamp);
+				dbHandler.updatePlayer(killer);
+				util.sendMessage(e.getEntity().getKiller(), "You now have " + killer.getKills() + " counted kill" + (killer.getKills() == 1 ? "" : "s") + "!");
+			}
 		}
 	}
 	
