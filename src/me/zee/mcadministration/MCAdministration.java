@@ -104,6 +104,7 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		Player ply = e.getPlayer();
 		DBPlayer playerInfo = dbHandler.getPlayerInfo(ply.getUniqueId());
 		if (playerInfo == null) return;
+		playerInfo.setLastName(ply.getName());
 		playerInfo.setLastSeen(new Date().getTime() / 1000);
 		dbHandler.updatePlayer(playerInfo);
 		if (!playerInfo.getRank().equals(permission.getPrimaryGroup(ply))) {//If rank saved in DB is different than user's current rank

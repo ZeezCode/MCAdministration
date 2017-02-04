@@ -121,6 +121,7 @@ public class DatabaseHandler {
 						result.getString("rank"), 
 						result.getString("password"), 
 						result.getString("salt"),
+						result.getString("last_name"),
 						result.getInt("kills"),
 						result.getInt("deaths"),
 						result.getLong("lastseen"));
@@ -200,14 +201,20 @@ public class DatabaseHandler {
 		}
 	}
 	
+	/**
+	 * <p>Updates specific data of a player stored in the database</p>
+	 * 
+	 * @param ply The player whose information is being updated
+	 */
 	public void updatePlayer(DBPlayer ply) {
 		openConnection();
 		try {
-			PreparedStatement sql = connection.prepareStatement("UPDATE players SET kills = ?, deaths = ?, lastseen = ? WHERE uuid = ?;");
+			PreparedStatement sql = connection.prepareStatement("UPDATE players SET kills = ?, deaths = ?, lastseen = ?, last_name = ? WHERE uuid = ?;");
 			sql.setInt(1, ply.getKills());
 			sql.setInt(2, ply.getDeaths());
 			sql.setLong(3, ply.getLastSeen());
-			sql.setString(4, ply.getUniqueID().toString());
+			sql.setString(4, ply.getLastName());
+			sql.setString(5, ply.getUniqueID().toString());
 			sql.executeUpdate();
 			
 			sql.close();
@@ -235,6 +242,33 @@ public class DatabaseHandler {
 		} finally {
 			closeConnection();
 		}
+	}
+	
+	/**
+	 * <p>Returns whether or not a given rank has a given permission</p>
+	 * 
+	 * @param ply The rank in question
+	 * @param permission The permission in question
+	 * @return boolean Whether or not the given rank has the given permission
+	 */
+	public boolean rankHasPermission(String rank, String permission) {
+		boolean hasPermission = false;
+		openConnection();
+		try {
+			PreparedStatement sql = connection.prepareStatement("SELECT * FROM ranks WHERE rank = ?;"); //JDBC won't let be select from dynamic column
+			sql.setString(1, rank);
+			ResultSet result = sql.executeQuery();
+			if (result.next())
+				hasPermission = result.getBoolean(permission);
+			result.close();
+			sql.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+		
+		return hasPermission;
 	}
 	
 	/**
