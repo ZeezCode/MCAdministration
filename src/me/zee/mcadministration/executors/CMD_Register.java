@@ -48,6 +48,7 @@ public class CMD_Register implements CommandExecutor {
 				if (args[0].equals(args[1])) {
 					plugin.dbHandler.registerPlayer(calling_ply, args[0]);
 					plugin.util.sendMessage(sender, "Your account has successfully been registered!");
+					plugin.connectionTime.put(calling_ply.getUniqueId(), plugin.util.getTimestamp());
 				} else {
 					plugin.util.sendError(sender, "The two entered passwords do not match!");
 				}

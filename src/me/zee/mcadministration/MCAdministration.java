@@ -1,6 +1,5 @@
 package me.zee.mcadministration;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -23,6 +22,7 @@ import me.zee.mcadministration.executors.*;
 import net.milkbowl.vault.permission.Permission;
 
 public class MCAdministration extends JavaPlugin implements Listener {
+	public HashMap<UUID, Long> connectionTime = null;
 	public HashMap<UUID, Long> mutedPlayers = null; //UUID = player, Long = timestamp at which player was muted
 	public Permission permission = null;
 	public DatabaseHandler dbHandler = null;
@@ -53,6 +53,7 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		util = new Utilities(this);
 		dbHandler = new DatabaseHandler(this);
 		mutedPlayers = new HashMap<UUID, Long>();
+		connectionTime = new HashMap<UUID, Long>();
 		Bukkit.getPluginManager().registerEvents(this, this);
 		
 		getCommand("kick").setExecutor(new CMD_Kick(this));
@@ -105,14 +106,16 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		DBPlayer playerInfo = dbHandler.getPlayerInfo(ply.getUniqueId());
 		if (playerInfo == null) return;
 		playerInfo.setLastName(ply.getName());
-		playerInfo.setLastSeen(new Date().getTime() / 1000);
+		playerInfo.setLastSeen(util.getTimestamp());
 		dbHandler.updatePlayer(playerInfo);
-		if (!playerInfo.getRank().equals(permission.getPrimaryGroup(ply))) {//If rank saved in DB is different than user's current rank
+		if (!playerInfo.getRank().equals(permission.getPrimaryGroup(ply))) { //If rank saved in DB is different than user's current rank
 			for (String group : permission.getPlayerGroups(ply)) {
 				permission.playerRemoveGroup(ply, group);
 			}
 			permission.playerAddGroup(ply, playerInfo.getRank());
 		}
+		
+		connectionTime.put(ply.getUniqueId(), util.getTimestamp());
 	}
 	
 	/**
@@ -124,7 +127,11 @@ public class MCAdministration extends JavaPlugin implements Listener {
 	public void onPlayerLeave(PlayerQuitEvent e) {
 		DBPlayer ply = dbHandler.getPlayerInfo(e.getPlayer().getUniqueId());
 		if (ply != null) {
-			ply.setLastSeen(new Date().getTime() / 1000);
+			UUID uuid = e.getPlayer().getUniqueId();
+			long newPlayTime = ply.getPlayTime() + (util.getTimestamp() - connectionTime.get(uuid));
+			connectionTime.remove(uuid);
+			ply.setPlayTime(newPlayTime);
+			ply.setLastSeen(util.getTimestamp());
 			dbHandler.updatePlayer(ply);
 		}
 	}
@@ -137,7 +144,7 @@ public class MCAdministration extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		DBPlayer target = dbHandler.getPlayerInfo(e.getEntity().getUniqueId());
-		long timestamp = new Date().getTime()/1000;
+		long timestamp = util.getTimestamp();
 		if (target != null) {
 			target.setDeaths(target.getDeaths() + 1);
 			target.setLastSeen(timestamp);

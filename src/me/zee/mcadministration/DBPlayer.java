@@ -6,9 +6,9 @@ public class DBPlayer {
 	private String rank, password, salt, lastName;
 	private UUID uuid;
 	private int kills, deaths;
-	private long lastSeen;
+	private long lastSeen, playTime;
 	
-	public DBPlayer(UUID uuid, String rank, String password, String salt, String lastName, int kills, int deaths, long lastSeen) {
+	public DBPlayer(UUID uuid, String rank, String password, String salt, String lastName, int kills, int deaths, long lastSeen, long playTime) {
 		this.uuid = uuid;
 		this.rank = rank;
 		this.password = password;
@@ -17,6 +17,7 @@ public class DBPlayer {
 		this.kills = kills;
 		this.deaths = deaths;
 		this.lastSeen = lastSeen;
+		this.playTime = playTime;
 	}
 	
 	public UUID getUniqueID() {
@@ -69,5 +70,13 @@ public class DBPlayer {
 	
 	public void setLastSeen(long lastSeen) {
 		this.lastSeen = lastSeen;
+	}
+	
+	public long getPlayTime() {
+		return playTime;
+	}
+	
+	public void setPlayTime(long playTime) {
+		this.playTime = playTime;
 	}
 }

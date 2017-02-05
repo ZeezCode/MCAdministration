@@ -124,7 +124,8 @@ public class DatabaseHandler {
 						result.getString("last_name"),
 						result.getInt("kills"),
 						result.getInt("deaths"),
-						result.getLong("lastseen"));
+						result.getLong("lastseen"),
+						result.getLong("playtime"));
 			result.close();
 			sql.close();
 		} catch(Exception e) {
@@ -209,12 +210,13 @@ public class DatabaseHandler {
 	public void updatePlayer(DBPlayer ply) {
 		openConnection();
 		try {
-			PreparedStatement sql = connection.prepareStatement("UPDATE players SET kills = ?, deaths = ?, lastseen = ?, last_name = ? WHERE uuid = ?;");
+			PreparedStatement sql = connection.prepareStatement("UPDATE players SET kills = ?, deaths = ?, lastseen = ?, last_name = ?, playtime = ? WHERE uuid = ?;");
 			sql.setInt(1, ply.getKills());
 			sql.setInt(2, ply.getDeaths());
 			sql.setLong(3, ply.getLastSeen());
 			sql.setString(4, ply.getLastName());
-			sql.setString(5, ply.getUniqueID().toString());
+			sql.setLong(5, ply.getPlayTime());
+			sql.setString(6, ply.getUniqueID().toString());
 			sql.executeUpdate();
 			
 			sql.close();
