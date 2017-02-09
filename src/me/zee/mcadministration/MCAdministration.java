@@ -71,6 +71,7 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		getCommand("register").setExecutor(new CMD_Register(this));
 		getCommand("setrank").setExecutor(new CMD_SetRank(this));
 		getCommand("changepassword").setExecutor(new CMD_ChangePassword(this));
+		getCommand("stats").setExecutor(new CMD_Stats(this));
 	}
 	
 	/**

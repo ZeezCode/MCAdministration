@@ -1,5 +1,5 @@
 name: MCAdministration
-version: 1.2
+version: 1.2.1
 main: me.zee.mcadministration.MCAdministration
 author: Zee
 depend: [Vault]
@@ -39,3 +39,5 @@ commands:
   changepassword:
     description: Change the password for a player's server account
     aliases: [changepass, changepw]
+  stats:
+    description: View the info saved about a registered player
