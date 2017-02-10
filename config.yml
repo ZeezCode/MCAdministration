@@ -4,3 +4,5 @@ db_host: 'localhost'
 db_name: 'db_name'
 db_user: 'username'
 db_pass: 'password'
+
+maxMuteTime: 30 #In minutes

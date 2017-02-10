@@ -17,21 +17,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.fusesource.jansi.Ansi;
 
 import me.zee.mcadministration.executors.*;
 import net.milkbowl.vault.permission.Permission;
 
 public class MCAdministration extends JavaPlugin implements Listener {
-	public HashMap<UUID, Long> connectionTime = null;
-	public HashMap<UUID, Long> mutedPlayers = null; //UUID = player, Long = timestamp at which player was muted
-	public Permission permission = null;
+	public HashMap<UUID, Long> connectionTime = null; 
+	public HashMap<UUID, Long> mutedPlayers = null;
 	public DatabaseHandler dbHandler = null;
+	public Permission permission = null;
 	public Utilities util = null;
-	
-	/**
-	 * TODO:
-	 *  - Web port
-	 */
 	
 	/**
 	 * <p>Returns the plugin's main config file</p>
@@ -50,28 +46,57 @@ public class MCAdministration extends JavaPlugin implements Listener {
 		getLogger().info(pdfFile.getName() + " has been enabled running version " + pdfFile.getVersion() + ".");
 		setupPermissions();
 		saveDefaultConfig();
+		
 		util = new Utilities(this);
 		dbHandler = new DatabaseHandler(this);
-		mutedPlayers = new HashMap<UUID, Long>();
-		connectionTime = new HashMap<UUID, Long>();
+		mutedPlayers = new HashMap<UUID, Long>(); //UUID = player, Long = timestamp at which player was muted
+		connectionTime = new HashMap<UUID, Long>(); //UUID = player, Long = timestamp at which player was muted
 		Bukkit.getPluginManager().registerEvents(this, this);
 		
+		getCommand("ban").setExecutor(new CMD_Ban(this));
 		getCommand("kick").setExecutor(new CMD_Kick(this));
 		getCommand("slay").setExecutor(new CMD_Slay(this));
 		getCommand("warn").setExecutor(new CMD_Warn(this));
-		getCommand("sethealth").setExecutor(new CMD_SetHealth(this));
 		getCommand("mute").setExecutor(new CMD_Mute(this));
-		getCommand("unmute").setExecutor(new CMD_Unmute(this));
-		getCommand("ban").setExecutor(new CMD_Ban(this));
-		getCommand("tempban").setExecutor(new CMD_TempBan(this));
 		getCommand("unban").setExecutor(new CMD_Unban(this));
-		getCommand("announce").setExecutor(new CMD_Announce(this));
-		getCommand("invsee").setExecutor(new CMD_Invsee(this));
-		getCommand("viewban").setExecutor(new CMD_ViewBan(this));
-		getCommand("register").setExecutor(new CMD_Register(this));
-		getCommand("setrank").setExecutor(new CMD_SetRank(this));
-		getCommand("changepassword").setExecutor(new CMD_ChangePassword(this));
 		getCommand("stats").setExecutor(new CMD_Stats(this));
+		getCommand("unmute").setExecutor(new CMD_Unmute(this));
+		getCommand("invsee").setExecutor(new CMD_Invsee(this));
+		getCommand("tempban").setExecutor(new CMD_TempBan(this));
+		getCommand("viewban").setExecutor(new CMD_ViewBan(this));
+		getCommand("setrank").setExecutor(new CMD_SetRank(this));
+		getCommand("announce").setExecutor(new CMD_Announce(this));
+		getCommand("register").setExecutor(new CMD_Register(this));
+		getCommand("sethealth").setExecutor(new CMD_SetHealth(this));
+		getCommand("changepassword").setExecutor(new CMD_ChangePassword(this));
+		
+		Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
+			public void run() {
+				long curTime = util.getTimestamp();
+				for (UUID uuid : mutedPlayers.keySet()) {
+					if (curTime - mutedPlayers.get(uuid) >= (getConfig().getInt("maxMuteTime") * 60)) {
+						//If player was muted longer than or equal to max time set in config
+						mutedPlayers.remove(uuid);
+						dbHandler.logAction("Unmute", uuid, null, null, 0l, util.getTimestamp());
+						
+						Player ply = Bukkit.getPlayer(uuid);
+						if (ply != null) {
+							util.sendMessage(ply, "You've been automatically unmuted by the server!");
+						}
+					}
+				}
+			}
+		}, 60 * 20, 60 * 20); //Run every minute
+	}
+	
+	/**
+	 * <p>Ran on plugin disable</p>
+	 */
+	public void onDisable() {
+		PluginDescriptionFile pdfFile = getDescription();
+		getLogger().info(pdfFile.getName() + " has been disabled!");
+		getLogger().warning(Ansi.ansi().fg(Ansi.Color.RED) + "This plugin does not support reloading! Certain functions of the plugin will not work after a reload!" + "\u001B[0m");
+		//Sets print color to red then resets print color after message is sent
 	}
 	
 	/**
