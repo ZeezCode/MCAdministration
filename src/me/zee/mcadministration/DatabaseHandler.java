@@ -257,7 +257,7 @@ public class DatabaseHandler {
 		boolean hasPermission = false;
 		openConnection();
 		try {
-			PreparedStatement sql = connection.prepareStatement("SELECT * FROM ranks WHERE rank = ?;"); //JDBC won't let be select from dynamic column
+			PreparedStatement sql = connection.prepareStatement("SELECT * FROM ranks WHERE rank = ?;"); //JDBC won't let me select from dynamic column
 			sql.setString(1, rank);
 			ResultSet result = sql.executeQuery();
 			if (result.next())

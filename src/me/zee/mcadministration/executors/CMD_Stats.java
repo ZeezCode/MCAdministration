@@ -36,6 +36,7 @@ public class CMD_Stats implements CommandExecutor {
 	 * 
 	 * @return boolean Whether or not command successfully ran
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player calling_ply = null;
@@ -49,7 +50,7 @@ public class CMD_Stats implements CommandExecutor {
 		
 		Player target = calling_ply;
 		if (args.length >= 1) {
-			if (!plugin.dbHandler.rankHasPermission(plugin.permission.getPrimaryGroup(calling_ply), "can_view_stats_others")) {
+			if (calling_ply instanceof Player && !plugin.dbHandler.rankHasPermission(plugin.permission.getPrimaryGroup(calling_ply), "can_view_stats_others")) {
 				plugin.util.sendError(calling_ply, "You do not have access to view others' stats!");
 				return true;
 			}
@@ -57,6 +58,11 @@ public class CMD_Stats implements CommandExecutor {
 			target = Bukkit.getPlayer(args[0]);
 			if (target == null) {
 				plugin.util.sendError(sender, "Target not found!");
+				return true;
+			}
+		} else {
+			if (!(sender instanceof Player)) {
+				plugin.util.sendError(sender, "No target specified!");
 				return true;
 			}
 		}
@@ -78,7 +84,7 @@ public class CMD_Stats implements CommandExecutor {
 				+ ChatColor.GREEN + "Deaths: " + ChatColor.WHITE + targetInfo.getDeaths() + "\n"
 				+ ChatColor.GREEN + "Last Seen: " + ChatColor.WHITE + lastSeen + "\n"
 				+ ChatColor.GREEN + "Playtime: " + ChatColor.WHITE + dF.format(targetInfo.getPlayTime() / 3600.0) + " hours";
-		plugin.util.sendMessage(calling_ply, targetInfoMsg);
+		plugin.util.sendMessage(sender, targetInfoMsg);
 		
 		return true;
 	}
